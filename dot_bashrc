@@ -116,29 +116,3 @@ export PATH="${ASDF_DATA_DIRL:-$HOME/.asdf}/shims:$PATH"
 
 source /opt/asdf-vm/asdf.sh
 
-asdf_update_dotnet_home() {
-  local dotnet_path
-  dotnet_path="$(asdf which dotnet)"
-  if [[ -n "${dotnet_path}" ]]; then
-    export DOTNET_ROOT
-    DOTNET_ROOT="$(dirname "$(realpath "${dotnet_path}")")"
-    export MSBuildSDKsPath
-    DOTNET_VERSION="$(dotnet --version)"
-    export MSBuildSDKsPath="$DOTNET_ROOT/sdk/$DOTNET_VERSION/Sdks"
-    export DOTNET_CLI_TELEMETRY_OPTOUT=1
-  fi
-}
-
-prompt_command() {
-  asdf_update_dotnet_home
-}
-
-export PROMPT_COMMAND="${PROMPT_COMMAND:+${PROMPT_COMMAND}; prompt_command}"
-export PROMPT_COMMAND="${PROMPT_COMMAND:-prompt_command}"
-
-
-version=`asdf current dotnet | awk '{print $2}'`
-echo "Parsed version: $version"
-export DOTNET_MSBUILD_SDK_RESOLVER_SDKS_DIR=$(echo $HOME/.asdf/installs/dotnet-core/$version/sdk/$version/Sdks)
-export DOTNET_MSBUILD_SDK_RESOLVER_SDKS_VER=$version
-export DOTNET_MSBUILD_SDK_RESOLVER_CLI_DIR=$(echo $HOME/.asdf/installs/dotnet-core/$version)
